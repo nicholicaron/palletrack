@@ -55,6 +55,20 @@ export const Body_login_login_access_tokenSchema = {
     title: 'Body_login-login_access_token'
 } as const;
 
+export const Body_videos_process_videoSchema = {
+    properties: {
+        file: {
+            type: 'string',
+            format: 'binary',
+            title: 'File',
+            description: 'Video file to process'
+        }
+    },
+    type: 'object',
+    required: ['file'],
+    title: 'Body_videos-process_video'
+} as const;
+
 export const HTTPValidationErrorSchema = {
     properties: {
         detail: {
@@ -210,6 +224,63 @@ export const NewPasswordSchema = {
     type: 'object',
     required: ['token', 'new_password'],
     title: 'NewPassword'
+} as const;
+
+export const OCRTextDataSchema = {
+    properties: {
+        text: {
+            type: 'string',
+            title: 'Text'
+        },
+        confidence: {
+            type: 'number',
+            title: 'Confidence'
+        },
+        bbox: {
+            items: {
+                type: 'number'
+            },
+            type: 'array',
+            title: 'Bbox'
+        }
+    },
+    type: 'object',
+    required: ['text', 'confidence', 'bbox'],
+    title: 'OCRTextData'
+} as const;
+
+export const PalletDataSchema = {
+    properties: {
+        track_id: {
+            type: 'integer',
+            title: 'Track Id'
+        },
+        first_seen_frame: {
+            type: 'integer',
+            title: 'First Seen Frame'
+        },
+        last_seen_frame: {
+            type: 'integer',
+            title: 'Last Seen Frame'
+        },
+        bbox: {
+            items: {
+                type: 'number'
+            },
+            type: 'array',
+            title: 'Bbox'
+        },
+        ocr_texts: {
+            items: {
+                '$ref': '#/components/schemas/OCRTextData'
+            },
+            type: 'array',
+            title: 'Ocr Texts'
+        }
+    },
+    type: 'object',
+    required: ['track_id', 'first_seen_frame', 'last_seen_frame', 'bbox', 'ocr_texts'],
+    title: 'PalletData'
 } as const;
 
 export const PrivateUserCreateSchema = {
@@ -523,4 +594,35 @@ export const ValidationErrorSchema = {
     type: 'object',
     required: ['loc', 'msg', 'type'],
     title: 'ValidationError'
+} as const;
+
+export const VideoProcessResponseSchema = {
+    properties: {
+        success: {
+            type: 'boolean',
+            title: 'Success'
+        },
+        message: {
+            type: 'string',
+            title: 'Message'
+        },
+        pallets: {
+            items: {
+                '$ref': '#/components/schemas/PalletData'
+            },
+            type: 'array',
+            title: 'Pallets'
+        },
+        total_frames: {
+            type: 'integer',
+            title: 'Total Frames'
+        },
+        fps: {
+            type: 'number',
+            title: 'Fps'
+        }
+    },
+    type: 'object',
+    required: ['success', 'message', 'pallets', 'total_frames', 'fps'],
+    title: 'VideoProcessResponse'
 } as const;

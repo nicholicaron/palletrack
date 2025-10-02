@@ -14,7 +14,7 @@ import { InputGroup } from "@/components/ui/input-group"
 import { PasswordInput } from "@/components/ui/password-input"
 import useAuth, { isLoggedIn } from "@/hooks/useAuth"
 import { confirmPasswordRules, emailPattern, passwordRules } from "@/utils"
-import Logo from "/assets/images/fastapi-logo.svg"
+import Logo from "/assets/images/PalleTrack_logo.png"
 
 export const Route = createFileRoute("/signup")({
   component: SignUp,
@@ -67,9 +67,9 @@ function SignUp() {
       >
         <Image
           src={Logo}
-          alt="FastAPI logo"
+          alt="PalleTrack logo"
           height="auto"
-          maxW="2xs"
+          maxW="xs"
           alignSelf="center"
           mb={4}
         />

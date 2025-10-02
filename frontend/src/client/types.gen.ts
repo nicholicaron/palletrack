@@ -9,6 +9,13 @@ export type Body_login_login_access_token = {
     client_secret?: (string | null);
 };
 
+export type Body_videos_process_video = {
+    /**
+     * Video file to process
+     */
+    file: (Blob | File);
+};
+
 export type HTTPValidationError = {
     detail?: Array<ValidationError>;
 };
@@ -42,6 +49,20 @@ export type Message = {
 export type NewPassword = {
     token: string;
     new_password: string;
+};
+
+export type OCRTextData = {
+    text: string;
+    confidence: number;
+    bbox: Array<(number)>;
+};
+
+export type PalletData = {
+    track_id: number;
+    first_seen_frame: number;
+    last_seen_frame: number;
+    bbox: Array<(number)>;
+    ocr_texts: Array<OCRTextData>;
 };
 
 export type PrivateUserCreate = {
@@ -105,6 +126,14 @@ export type ValidationError = {
     loc: Array<(string | number)>;
     msg: string;
     type: string;
+};
+
+export type VideoProcessResponse = {
+    success: boolean;
+    message: string;
+    pallets: Array<PalletData>;
+    total_frames: number;
+    fps: number;
 };
 
 export type ItemsReadItemsData = {
@@ -232,3 +261,9 @@ export type UtilsTestEmailData = {
 export type UtilsTestEmailResponse = (Message);
 
 export type UtilsHealthCheckResponse = (boolean);
+
+export type VideosProcessVideoData = {
+    formData: Body_videos_process_video;
+};
+
+export type VideosProcessVideoResponse = (VideoProcessResponse);
