@@ -1,0 +1,73 @@
+# PalleTrack Computer Vision Pipeline Configuration
+
+# Object Detection Settings
+detection:
+  # Path to YOLOv8 pallet detection model
+  pallet_model_path: "models/pallet_yolov8.pt"
+
+  # Path to YOLOv8 document detection model
+  document_model_path: "models/document_yolov8.pt"
+
+  # Minimum confidence threshold for pallet detections (0.0-1.0)
+  pallet_conf_threshold: 0.5
+
+  # Minimum confidence threshold for document detections (0.0-1.0)
+  document_conf_threshold: 0.6
+
+# Object Tracking Settings (ByteTrack)
+tracking:
+  # Maximum number of frames to keep a track alive without new detections
+  max_age: 30
+
+  # Minimum number of detections before a track is confirmed as valid
+  min_hits: 3
+
+  # IoU threshold for matching detections to existing tracks
+  iou_threshold: 0.3
+
+# Intelligent Frame Sampling Settings
+frame_sampling:
+  # Minimum pixel movement of track center to trigger frame sampling
+  movement_threshold: 50.0
+
+  # Minimum bbox size change ratio to trigger sampling (e.g., 0.2 = 20% change)
+  size_change_threshold: 0.2
+
+  # Maximum number of frames between samples (forces periodic sampling)
+  max_frame_gap: 30
+
+  # Maximum number of frames to sample per track
+  max_samples_per_track: 10
+
+# OCR Settings (PaddleOCR)
+ocr:
+  # Language code for OCR (en, es, fr, de, etc.)
+  language: "en"
+
+  # Use GPU for OCR processing if available
+  use_gpu: true
+
+  # Minimum confidence threshold for OCR text results
+  min_text_confidence: 0.6
+
+# Confidence Thresholds for Data Extraction
+confidence:
+  # Confidence threshold for auto-accepting extracted data (no review needed)
+  auto_accept: 0.85
+
+  # Confidence threshold below which data needs manual review
+  needs_review: 0.60
+
+  # Confidence threshold below which data is auto-rejected
+  auto_reject: 0.40
+
+# Logging Configuration
+logging:
+  # Logging level: DEBUG, INFO, WARNING, ERROR, CRITICAL
+  level: "INFO"
+
+  # Directory for storing log files
+  log_dir: "logs"
+
+  # Enable saving frames for debugging (warning: increases storage usage)
+  enable_frame_logging: false
