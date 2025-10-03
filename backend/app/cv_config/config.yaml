@@ -39,6 +39,24 @@ frame_sampling:
   # Maximum number of frames to sample per track
   max_samples_per_track: 10
 
+# Frame Quality Assessment Settings
+frame_quality:
+  # Minimum sharpness threshold (Laplacian variance)
+  # Values < 100 are typically too blurry for OCR
+  min_sharpness: 100.0
+
+  # Minimum size score (0-1) - filters out very small/distant regions
+  # 0.3 means region must be at least ~3% of frame area
+  min_size_score: 0.3
+
+  # Weights for composite quality score (must sum to ~1.0)
+  sharpness_weight: 0.5  # Most important for OCR
+  size_weight: 0.3       # Larger regions have more readable text
+  angle_weight: 0.2      # Frontal views are better than angled
+
+  # Number of best frames to select per track for OCR processing
+  frames_to_select: 5
+
 # OCR Settings (PaddleOCR)
 ocr:
   # Language code for OCR (en, es, fr, de, etc.)

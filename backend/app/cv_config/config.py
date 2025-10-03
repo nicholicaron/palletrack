@@ -99,6 +99,26 @@ class ConfidenceConfig(BaseModel):
         return v
 
 
+class FrameQualityConfig(BaseModel):
+    """Configuration for frame quality assessment.
+
+    Attributes:
+        min_sharpness: Minimum sharpness threshold (Laplacian variance)
+        min_size_score: Minimum size score (0-1)
+        sharpness_weight: Weight for sharpness metric in composite score
+        size_weight: Weight for size metric in composite score
+        angle_weight: Weight for angle metric in composite score
+        frames_to_select: Number of best frames to select per track
+    """
+
+    min_sharpness: float = Field(default=100.0, ge=0.0)
+    min_size_score: float = Field(default=0.3, ge=0.0, le=1.0)
+    sharpness_weight: float = Field(default=0.5, ge=0.0, le=1.0)
+    size_weight: float = Field(default=0.3, ge=0.0, le=1.0)
+    angle_weight: float = Field(default=0.2, ge=0.0, le=1.0)
+    frames_to_select: int = Field(default=5, ge=1)
+
+
 class LoggingConfig(BaseModel):
     """Configuration for logging.
 
@@ -130,6 +150,7 @@ class AppConfig(BaseModel):
         detection: Detection configuration
         tracking: Tracking configuration
         frame_sampling: Frame sampling configuration
+        frame_quality: Frame quality assessment configuration
         ocr: OCR configuration
         confidence: Confidence threshold configuration
         logging: Logging configuration
@@ -138,6 +159,7 @@ class AppConfig(BaseModel):
     detection: DetectionConfig = Field(default_factory=DetectionConfig)
     tracking: TrackingConfig = Field(default_factory=TrackingConfig)
     frame_sampling: FrameSamplingConfig = Field(default_factory=FrameSamplingConfig)
+    frame_quality: FrameQualityConfig = Field(default_factory=FrameQualityConfig)
     ocr: OCRConfig = Field(default_factory=OCRConfig)
     confidence: ConfidenceConfig = Field(default_factory=ConfidenceConfig)
     logging: LoggingConfig = Field(default_factory=LoggingConfig)
