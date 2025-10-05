@@ -3,7 +3,7 @@
 # Object Detection Settings
 detection:
   # Path to YOLOv8 pallet detection model
-  pallet_model_path: "models/pallet_yolov8.pt"
+  pallet_model_path: "models/pallet_yolov8n.pt"
 
   # Path to YOLOv8 document detection model
   document_model_path: "models/document_yolov8.pt"
@@ -13,6 +13,16 @@ detection:
 
   # Minimum confidence threshold for document detections (0.0-1.0)
   document_conf_threshold: 0.6
+
+  # IoU threshold for Non-Maximum Suppression in pallet detection
+  pallet_iou_threshold: 0.45
+
+  # Device to run inference on ('cuda' or 'cpu')
+  device: "cuda"
+
+  # Size filtering for pallet detections (pixels)
+  min_pallet_area: 10000   # Filter out very small detections
+  max_pallet_area: 500000  # Filter out unreasonably large detections
 
 # Object Tracking Settings (ByteTrack)
 tracking:

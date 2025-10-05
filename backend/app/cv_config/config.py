@@ -16,12 +16,20 @@ class DetectionConfig(BaseModel):
         document_model_path: Path to YOLOv8 document detection model
         pallet_conf_threshold: Minimum confidence for pallet detections
         document_conf_threshold: Minimum confidence for document detections
+        pallet_iou_threshold: IoU threshold for NMS in pallet detection
+        device: Device to run inference on ('cuda' or 'cpu')
+        min_pallet_area: Minimum pallet bbox area in pixels
+        max_pallet_area: Maximum pallet bbox area in pixels
     """
 
-    pallet_model_path: str = "models/pallet_yolov8.pt"
+    pallet_model_path: str = "models/pallet_yolov8n.pt"
     document_model_path: str = "models/document_yolov8.pt"
     pallet_conf_threshold: float = Field(default=0.5, ge=0.0, le=1.0)
     document_conf_threshold: float = Field(default=0.6, ge=0.0, le=1.0)
+    pallet_iou_threshold: float = Field(default=0.45, ge=0.0, le=1.0)
+    device: str = "cuda"
+    min_pallet_area: int = Field(default=10000, ge=0)
+    max_pallet_area: int = Field(default=500000, ge=0)
 
     @field_validator('pallet_model_path', 'document_model_path')
     @classmethod
