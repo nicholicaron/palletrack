@@ -24,6 +24,11 @@ detection:
   min_pallet_area: 10000   # Filter out very small detections
   max_pallet_area: 500000  # Filter out unreasonably large detections
 
+  # Document-Pallet Association Settings
+  max_association_distance: 100  # Max distance (pixels) for fallback association
+  containment_confidence: 0.9    # Confidence when document is inside pallet bbox
+  proximity_confidence: 0.7      # Confidence when using proximity fallback
+
 # Object Tracking Settings (ByteTrack)
 tracking:
   # Maximum number of frames to keep a track alive without new detections
@@ -34,6 +39,13 @@ tracking:
 
   # IoU threshold for matching detections to existing tracks
   iou_threshold: 0.3
+
+  # Processing logic
+  # Minimum frames a track must exist before processing for OCR
+  min_track_length: 10
+
+  # Minimum frames between OCR attempts on the same track
+  frames_between_ocr: 15
 
 # Intelligent Frame Sampling Settings
 frame_sampling:
@@ -48,6 +60,16 @@ frame_sampling:
 
   # Maximum number of frames to sample per track
   max_samples_per_track: 10
+
+  # Minimum quality score required to process a frame (0.0-1.0)
+  min_quality_score: 0.5
+
+  # Minimum temporal gap between selected frames (prevents clustering)
+  min_temporal_gap: 10
+
+  # Dynamic sampling based on track velocity
+  high_velocity_threshold: 20.0  # pixels/frame - threshold for "fast" tracks
+  high_velocity_sample_rate: 5   # sample every N frames for fast tracks
 
 # Frame Quality Assessment Settings
 frame_quality:
@@ -78,6 +100,81 @@ ocr:
   # Minimum confidence threshold for OCR text results
   min_text_confidence: 0.6
 
+  # OCR Preprocessing Settings
+  preprocessing:
+    # Apply CLAHE (Contrast Limited Adaptive Histogram Equalization)
+    apply_clahe: true
+    clahe_clip_limit: 2.0
+    clahe_grid_size: 8
+
+    # Apply bilateral filter for edge-preserving denoising
+    bilateral_filter: true
+    bilateral_d: 9
+    bilateral_sigma_color: 75
+    bilateral_sigma_space: 75
+
+    # Remove glare from plastic document pouches
+    remove_glare: true
+    glare_threshold: 240
+
+    # Perspective correction (experimental - may not always improve)
+    apply_perspective_correction: false
+
+    # Adaptive sharpening threshold (only sharpen if sharpness > this)
+    sharpen_threshold: 100
+
+  # Multi-Frame OCR Aggregation Settings
+  aggregation:
+    # Aggregation method: voting, highest_confidence, longest, confidence_weighted
+    method: "voting"
+
+    # Minimum frames needed for consensus calculation
+    min_frames_for_consensus: 2
+
+  # Post-Processing Settings
+  post_processing:
+    # Fix common OCR character errors (O→0, I→1, etc.)
+    fix_common_errors: true
+
+    # Normalize whitespace (collapse multiple spaces, trim)
+    normalize_whitespace: true
+
+    # Remove invalid characters (optional)
+    remove_invalid_chars: false
+
+# Data Extraction Settings
+data_extraction:
+  # Document Classification Settings
+  classification:
+    # Minimum confidence threshold for document classification
+    min_confidence: 0.6
+
+    # Whether to require all keywords to match (strict mode)
+    require_all_keywords: false
+
+  # Field Extraction Settings
+  field_extraction:
+    # Extract line items from packing lists
+    extract_items: true
+
+    # Maximum number of items to extract (safety limit)
+    max_items: 100
+
+  # Data Validation Settings
+  validation:
+    # Require tracking number for BOL and Shipping Labels
+    require_tracking_number: true
+
+    # Require weight field
+    require_weight: false
+
+    # Valid weight range (lbs)
+    min_weight: 1.0
+    max_weight: 5000.0
+
+    # Validate address components (city, state)
+    validate_addresses: true
+
 # Confidence Thresholds for Data Extraction
 confidence:
   # Confidence threshold for auto-accepting extracted data (no review needed)
@@ -89,6 +186,37 @@ confidence:
   # Confidence threshold below which data is auto-rejected
   auto_reject: 0.40
 
+  # Factor weights for overall confidence calculation (must sum to 1.0)
+  weights:
+    detection_conf: 0.15        # Weight for detection confidence
+    ocr_conf: 0.25              # Weight for OCR confidence
+    field_completeness: 0.25    # Weight for field completeness
+    cross_frame_consistency: 0.20  # Weight for cross-frame consistency
+    data_validation: 0.15       # Weight for data validation
+
+  # Data validation settings
+  validation:
+    min_weight: 1.0             # Minimum valid weight (lbs)
+    max_weight: 5000.0          # Maximum valid weight (lbs)
+    validate_tracking_format: true
+    validate_zip_format: true
+    detect_garbage_text: true
+
+# Review Queue Management
+review_queue:
+  # Priority order for review queue
+  # Options: confidence (lowest first), timestamp (FIFO), importance (by doc type)
+  priority_order: "confidence"
+
+  # Maximum number of items in review queue
+  max_queue_size: 1000
+
+  # Save best frame image for each review item
+  save_frames: true
+
+  # Directory to save review frames
+  frame_save_path: "review_frames"
+
 # Logging Configuration
 logging:
   # Logging level: DEBUG, INFO, WARNING, ERROR, CRITICAL
@@ -99,3 +227,17 @@ logging:
 
   # Enable saving frames for debugging (warning: increases storage usage)
   enable_frame_logging: false
+
+  # Save failed extractions for analysis
+  save_failed_extractions: true
+
+# Performance Settings
+performance:
+  # Batch size for processing (future use)
+  batch_size: 1
+
+  # Maximum number of frames to buffer per track
+  max_frame_buffer_size: 50
+
+  # Cleanup interval (frames) for removing old data
+  cleanup_interval: 100

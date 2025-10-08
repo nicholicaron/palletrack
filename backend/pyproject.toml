@@ -25,8 +25,15 @@ dependencies = [
     "opencv-python<5.0.0,>=4.8.0",
     "supervision<1.0.0,>=0.23.0",
     "ultralytics<9.0.0,>=8.0.0",
-    "paddlepaddle>=2.6.0",
+    "paddlepaddle>=2.6.0",  # CPU version (default). For GPU: pip install -e ".[gpu]"
     "paddleocr>=2.7.0",
+]
+
+# Optional dependencies for GPU support
+# Install with: uv pip install -e ".[gpu]"
+[project.optional-dependencies]
+gpu = [
+    "paddlepaddle-gpu>=2.6.0",  # Replaces paddlepaddle for CUDA acceleration
 ]
 
 [tool.uv]
